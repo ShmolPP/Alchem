@@ -1,5 +1,7 @@
-
-    
+My first priority was to solve the first puzzle because it involved breaking the sequence of alchemical symbols. I understood that all symbolic representations of these metals transmit particular metallic meanings so “☉” stands for Gold while “☿” represents Quicksilver with “☽” representing Silver and “♂” symbolizing Iron. I then implemented a function called decodeAlchemyCode that splits the provided string into individual symbols, maps each symbol to its corresponding metal using a lookup object, and then joins the results into a single string.
 https://en.wikipedia.org/wiki/Lethe, https://www.merriam-webster.com/dictionary/eldritch
-
 https://en.wikipedia.org/wiki/Astrological_symbols
+
+The next challenge required deciphering a complicated poetry. I considered picking "Forgotten Knowledge" as my option since the connection to Lethe mixed with lost wisdom. This response failed to address the problem. I went over the poem again to look for any hidden clues because its structure seemed unusual to me. When the initial capital letters of the poem "Still flows the Icy Lethe, Veiling all 'neath Eldritch Rime" were combined, they formed the word SILVER. Yes, I felt stupid for seeing it earlier. 
+I wrote a helper funciton, the program implements extractCapitals that splits the text into words eliminate capital-letter words then use first letter extraction followed by word and letter join operations to produce the result. I completed a test to verify that the function properly produced the result “SILVER” for the poem.
+https://www.digitale-sammlungen.de/en/view/bsb10321483?page=6,7

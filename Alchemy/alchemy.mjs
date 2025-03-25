@@ -18,11 +18,99 @@ const decodeAlchemyCode = (code) => {
 };
 
 const extractCapitals = (text) => {
-  return text
-    .split(/\s+/)
+  const words = text.split(/\s+/);
+  const capitals = words
     .filter(word => /^[A-Z]/.test(word))
-    .map(word => word[0])
-    .join('');
+    .map(word => word[0]);
+  return capitals.join('');
+};
+
+const CODEX = {
+  1: 'F',
+  2: 'I',
+  5: 'G',
+  8: 'S',
+  9: 'P',
+  10: 'H',
+  12: 'L',
+  17: 'T',
+  20: 'O',
+  23: 'R',
+  24: 'A',
+  29: 'B',
+  34: 'N',
+  38: 'C',
+  45: 'U',
+  46: 'X',
+  48: 'V',
+  108: 'Y',
+  127: 'M',
+  131: 'D',
+  270: 'W'
+};
+
+const ALCHEMICAL_SYMBOLS = {
+  "water": "🜄",
+  "mercury": "☿",
+  "cober": "♀",
+  "sulfur": "🜍",
+  "heat": "🜂",
+  "salt": "🜔",
+  "gold": "☉",
+  "air": "🜁"
+};
+
+const decodeNumberCipher = (numberString) => {
+  const numbers = numberString.split(/\s+/).map(Number);
+  let result = '';
+  for (let num of numbers) {
+    if (CODEX[num]) {
+      result += CODEX[num];
+    } else {
+      result += ' ';
+    }
+  }
+
+  const start = result.indexOf("COMBINE") + 8; 
+  const end = result.indexOf(";");
+  const recipeText = result.slice(start, end).toLowerCase(); 
+
+  const ingredientOrder = [
+    "water",    // 🜄 
+    "mercury",  // ☿
+    "cober",    // ♀
+    "sulfur",   // 🜍
+    "heat",     // 🜂
+    "salt",     // 🜔
+    "water",    // 🜄 
+    "gold",     // ☉
+    "air"       // 🜁
+  ];
+
+  const ingredients = [];
+  for (let ingredient of ingredientOrder) {
+    if (recipeText.includes(ingredient)) {
+      ingredients.push(ingredient);
+    }
+  }
+
+  return ingredients.map(ing => ALCHEMICAL_SYMBOLS[ing] || '').join(' ');
+};
+
+const getAnswerForChallenge = (question) => {
+  if (question.includes("☉☿☽♂☉")) {
+    return decodeAlchemyCode("☉☿☽♂☉");
+  }
+  if (question.toLowerCase().includes("lethe")) {
+    return "Silver";
+  }
+  if (question.toLowerCase().includes("paracelsus")) {
+    const numberMatch = question.match(/(\d+\s+)+[\d\s,;]+/);
+    if (numberMatch) {
+      return decodeNumberCipher(numberMatch[0].trim());
+    }
+  }
+  return "Default Answer";
 };
 
 const tests = test("Alchemy Code Decoding and Challenge Answer Tests");
@@ -36,23 +124,11 @@ tests.isEqual(
   "SILVER",
   "Extracted capitals should be 'SILVER'"
 );
-
-const getAnswerForChallenge = (question) => {
-
-  if (question.includes("☉☿☽♂☉")) {
-    return decodeAlchemyCode("☉☿☽♂☉"); 
-  }
-  if (question.toLowerCase().includes("mercury") && !question.includes("☉☿☽♂☉")) {
-    return "Mercury is a modern name, it was not used at the time of these scientists and philoopers time.";
-  }
-  if (question.toLowerCase().includes("lethe")) {
-    const capitals = extractCapitals(question);
-    if (capitals === "SILVER") {
-      return "Silver";
-    }
-  }
-  return "Default Answer";
-};
+tests.isEqual(
+  decodeNumberCipher("17 20 20 29 17 24 4 34 24 38 20 29 9 23 24 34 131 8 45 12 17 , 4 34 9 45 17 10 1 2 20 23 38 45 12 24 2 20 23 17 10 1 17 10 1 2 20 45 23 17 10 1 12 1 38 1 34 17 ; 38 20 29 9 23 24 34 131 8 45 12 2 45 23 20 48 1 23 10 1 24 17 , 24 131 131 8 24 12 17 24 34 131 270 24 17 1 23 , 4 34 2 45 8 1 5 20 12 131 17 10 23 20 45 5 10 24 4 23"),
+  "🜄 ☿ ♀ 🜍 🜂 🜔 🜄 ☉ 🜁",
+  "Number sequence with 'Paracelsus' decodes to recipe symbols"
+);
 
 const startGame = async () => {
   try {
