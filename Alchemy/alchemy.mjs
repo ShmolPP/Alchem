@@ -12,15 +12,10 @@ const decodeAlchemyCode = (code) => {
     "♂": "Iron"
   };
   return code
- .split('')
+    .split('')
     .map(symbol => symbolMap[symbol] || symbol)
     .join(' ');
 };
-
-const tests = test("Alchemy Code Decoding Tests");
-tests.isEqual(
-  decodeAlchemyCode("☉☿☽♂☉"), "Gold Quicksilver Silver Iron Gold","Decoding '☉☿☽♂☉' should return 'Gold Quicksilver Silver Iron Gold'"
-);
 
 const getAnswerForChallenge = (question) => {
   if (question.includes("☉☿☽♂☉")) {
@@ -29,9 +24,23 @@ const getAnswerForChallenge = (question) => {
   if (question.toLowerCase().includes("mercury") && !question.includes("☉☿☽♂☉")) {
     return "Mercury is a modern name, it was not used at the time of these scientists and philoopers time.";
   }
-
+  if (question.toLowerCase().includes("lethe")) {
+    return "Silver"; 
+  }
   return "Default Answer";
 };
+
+const tests = test("Alchemy Code Decoding and Challenge Answer Tests");
+tests.isEqual(
+  decodeAlchemyCode("☉☿☽♂☉"),
+  "Gold Quicksilver Silver Iron Gold",
+  "Decoding '☉☿☽♂☉' should return 'Gold Quicksilver Silver Iron Gold'"
+);
+tests.isEqual(
+  getAnswerForChallenge("Still flows the Icy Lethe, Veiling all ’neath Eldritch Rime"),
+  "Silver",
+  "Poem with 'Lethe' should return 'Silver'"
+);
 
 
 const startGame = async () => {
@@ -45,7 +54,6 @@ const startGame = async () => {
     throw err;
   }
 };
-
 
 const submitAnswer = async (answer) => {
   try {
@@ -63,13 +71,13 @@ const submitAnswer = async (answer) => {
   }
 };
 
-
 const main = async () => {
   try {
     const challenge = await startGame();
     if (challenge && challenge.challenge) {
       console.log("Challenge received:", challenge.challenge);
       const answer = getAnswerForChallenge(challenge.challenge);
+      console.log("Submitting answer:", answer);
       const nextChallenge = await submitAnswer(answer);
       console.log("Next challenge received:", nextChallenge);
     } else {
