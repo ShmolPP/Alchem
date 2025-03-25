@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import test from './test.mjs';
+import test from './test.mjs'; 
 
 const API = "https://alchemy-kd0l.onrender.com";
 const PLAYER_NAME = "solat@uia.no";
@@ -11,23 +11,28 @@ const decodeAlchemyCode = (code) => {
     "☽": "Silver",
     "♂": "Iron"
   };
-  return code .split('')
+  return code
+ .split('')
     .map(symbol => symbolMap[symbol] || symbol)
     .join(' ');
 };
 
 const tests = test("Alchemy Code Decoding Tests");
-tests.isEqual(decodeAlchemyCode("☉☿☽♂☉"), "Gold Quicksilver Silver Iron Gold", "Decoding '☉☿☽♂☉' should return 'Gold Quicksilver Silver Iron Gold'");
+tests.isEqual(
+  decodeAlchemyCode("☉☿☽♂☉"), "Gold Quicksilver Silver Iron Gold","Decoding '☉☿☽♂☉' should return 'Gold Quicksilver Silver Iron Gold'"
+);
 
 const getAnswerForChallenge = (question) => {
   if (question.includes("☉☿☽♂☉")) {
-    return decodeAlchemyCode("☉☿☽♂☉");
+    return decodeAlchemyCode("☉☿☽♂☉"); 
   }
   if (question.toLowerCase().includes("mercury") && !question.includes("☉☿☽♂☉")) {
     return "Mercury is a modern name, it was not used at the time of these scientists and philoopers time.";
   }
+
   return "Default Answer";
 };
+
 
 const startGame = async () => {
   try {
@@ -40,6 +45,7 @@ const startGame = async () => {
     throw err;
   }
 };
+
 
 const submitAnswer = async (answer) => {
   try {
@@ -57,19 +63,20 @@ const submitAnswer = async (answer) => {
   }
 };
 
+
 const main = async () => {
   try {
-    let challenge = await startGame();
-    while (challenge && challenge.challenge) {
+    const challenge = await startGame();
+    if (challenge && challenge.challenge) {
       console.log("Challenge received:", challenge.challenge);
       const answer = getAnswerForChallenge(challenge.challenge);
       const nextChallenge = await submitAnswer(answer);
       console.log("Next challenge received:", nextChallenge);
-      challenge = nextChallenge;
+    } else {
+      console.log("No challenge question received.");
     }
-    console.log("No more challenges received.");
   } catch (error) {
-    console.error("An error occurred", error);
+    console.error("An error occurred in main:", error);
   }
 };
 
