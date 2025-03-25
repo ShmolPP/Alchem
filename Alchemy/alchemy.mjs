@@ -44,7 +44,11 @@ tests.isEqual(
   "Poem with 'Lethe' should return 'Silver'"
 );
 
-
+tests.isEqual(
+  getAnswerForChallenge("Paracelsus wrote: to optain access to the next verlt, insrt the formule for the the fourth element; combine mercrry, copper, and sulfur over heat, add salt ard water, infrse gold throlgh air"),
+  "☿♀🜍🜂🜔🜄☉🜁",
+  " should return the alchemical symbols in the order they appear"
+);
 const startGame = async () => {
   try {
     const response = await fetch(`${API}/start?player=${PLAYER_NAME}`);
