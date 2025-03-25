@@ -17,17 +17,12 @@ const decodeAlchemyCode = (code) => {
     .join(' ');
 };
 
-const getAnswerForChallenge = (question) => {
-  if (question.includes("☉☿☽♂☉")) {
-    return decodeAlchemyCode("☉☿☽♂☉"); 
-  }
-  if (question.toLowerCase().includes("mercury") && !question.includes("☉☿☽♂☉")) {
-    return "Mercury is a modern name, it was not used at the time of these scientists and philoopers time.";
-  }
-  if (question.toLowerCase().includes("lethe")) {
-    return "Silver"; 
-  }
-  return "Default Answer";
+const extractCapitals = (text) => {
+  return text
+    .split(/\s+/)
+    .filter(word => /^[A-Z]/.test(word))
+    .map(word => word[0])
+    .join('');
 };
 
 const tests = test("Alchemy Code Decoding and Challenge Answer Tests");
@@ -37,11 +32,27 @@ tests.isEqual(
   "Decoding '☉☿☽♂☉' should return 'Gold Quicksilver Silver Iron Gold'"
 );
 tests.isEqual(
-  getAnswerForChallenge("Still flows the Icy Lethe, Veiling all ’neath Eldritch Rime"),
-  "Silver",
-  "Poem with 'Lethe' should return 'Silver'"
+  extractCapitals("Still flows the Icy Lethe, Veiling all ’neath Eldritch Rime"),
+  "SILVER",
+  "Extracted capitals should be 'SILVER'"
 );
 
+const getAnswerForChallenge = (question) => {
+
+  if (question.includes("☉☿☽♂☉")) {
+    return decodeAlchemyCode("☉☿☽♂☉"); 
+  }
+  if (question.toLowerCase().includes("mercury") && !question.includes("☉☿☽♂☉")) {
+    return "Mercury is a modern name, it was not used at the time of these scientists and philoopers time.";
+  }
+  if (question.toLowerCase().includes("lethe")) {
+    const capitals = extractCapitals(question);
+    if (capitals === "SILVER") {
+      return "Silver";
+    }
+  }
+  return "Default Answer";
+};
 
 const startGame = async () => {
   try {
